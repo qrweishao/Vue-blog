@@ -9,6 +9,6 @@ export const dbName = {
     database:'vue_blog'
 }
 
-export const base_API = 'api/'
+export const base_API = '/api'
 
 export const secret = 'vue_blog'
