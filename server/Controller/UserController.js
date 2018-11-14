@@ -47,6 +47,13 @@ class UserController {
         }
         
     }
+    // 退出的业务逻辑
+    async logout(ctx){
+        ctx.body = {
+            success:true,
+            message:'退出成功'
+        }
+    }
 }
 
 export default new UserController()
