@@ -12,7 +12,7 @@ export default  async ( ctx, next ) => {
   let tokenContent;
   try {
     tokenContent = await jwt.verify(XToken, secret);     //如果token过期或验证失败，将抛出错误
-    await next();    
+    next();    
   }catch(err){
     // ctx.throw(401, 'invalid token');
     ctx.body = {
