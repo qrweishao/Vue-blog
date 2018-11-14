@@ -65,9 +65,9 @@ export default {
                     // 正确后 要先得到token值 将token值存到cookie里面去
                     //跳转博客的首页 就是/list页面
                     let token = res.token;
-                    setToken(token)
-                    this.$store.commit('SET_TOKEN',token)
-                    this.$router.push('/list')
+                    setToken(token) //在浏览器cookie中保存token 每次请求带着它
+                    this.$store.commit('SET_TOKEN',token) //保存在全局的状态下
+                    this.$router.push('/list') //跳转到list页面
                    }else{
                     // 如果用户名 密码不正确 要给出提示
                        this.$notify({
