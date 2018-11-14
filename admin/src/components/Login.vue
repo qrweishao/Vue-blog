@@ -9,19 +9,22 @@
                 登登登登。。。录
                 <span>/ Login</span>
             </span>
-            <input name="user" v-validate="'required|min:6|max:16|alpha_dash'" type="text" id="user" placeholder="请填写用户名" v-model="LoginForm.user">
-            <input name="password" v-validate="'required|alpha_num'" type="password" id="password" placeholder="请输入密码" v-model="LoginForm.password" @keydown.enter="login">
+            <input name="user" v-validate="'required|min:5|max:16|alpha_dash'" type="text" id="user" placeholder="请填写用户名" v-model="LoginForm.user">
+            <input name="password"  type="password" id="password" placeholder="请输入密码" v-model="LoginForm.password" @keydown.enter="login">
             <button id="login" @click="login">登录</button>
         </section>
         <footer>Always.</footer>
         <!-- <span>{{errors.first('user')}}</span> -->
         <notifications group="user"/>
+        <notifications group="admin"/>
     </div>
 </template>
 
 <script>
 // 设置验证的中文提示消息
 import { Validator } from 'vee-validate'
+// 引入设置cookie的方法
+import { setToken } from '@/utils/auth'
 const dict = {
     custom: {
         user: {
@@ -58,11 +61,22 @@ export default {
                    data:this.LoginForm
                }).then(res=>{
                    console.log(res);
-                // 如果用户名 密码不正确 要给出提示
-
-                // 正确后 要先得到token值 将token值存到cookie里面去
-
-                //跳转博客的首页 就是/list页面
+                   if (res.success) {
+                    // 正确后 要先得到token值 将token值存到cookie里面去
+                    //跳转博客的首页 就是/list页面
+                    let token = res.token;
+                    setToken(token)
+                    this.$store.commit('SET_TOKEN',token)
+                    this.$router.push('/list')
+                   }else{
+                    // 如果用户名 密码不正确 要给出提示
+                       this.$notify({
+                        type:'warn',
+                        group:'user',
+                        title:'登录失败',
+                        text:res.message
+                       })
+                   }
 
                }).catch(err=>{
                 // 如果发请求有错误 把错误扔给控制台
@@ -70,8 +84,8 @@ export default {
             }else{
                 console.log(this.errors.items);
                 this.$notify({
-                    type:'warn',
-                    group:'user',
+                    type:'error',
+                    group:'admin',
                     title:'验证失败',
                     text:this.errors.items[0].msg
                 })
