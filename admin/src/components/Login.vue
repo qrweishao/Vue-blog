@@ -60,7 +60,7 @@ export default {
                    method:'post',
                    data:this.LoginForm
                }).then(res=>{
-                   console.log(res);
+                //    console.log(res);
                    if (res.success) {
                     // 正确后 要先得到token值 将token值存到cookie里面去
                     //跳转博客的首页 就是/list页面
@@ -82,7 +82,7 @@ export default {
                 // 如果发请求有错误 把错误扔给控制台
                })               
             }else{
-                console.log(this.errors.items);
+                // console.log(this.errors.items);
                 this.$notify({
                     type:'error',
                     group:'admin',
