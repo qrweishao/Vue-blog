@@ -10,7 +10,7 @@
             <main>
                 <div class="article-list">
                     <section class="btn-container">
-                        <button id="add" class="not-del" @click="postArticle">新文章</button>
+                        <button id="add" class="not-del" @click="addArticle">新文章</button>
                     </section>
                     <!-- 文章列表的组件 -->
                     <article-list ref="articleList"></article-list>
@@ -23,10 +23,12 @@
 </template>
 
 <script>
+
 import Aside from '@/components/common/Aside'
 import HeadNav from '@/components/common/HeadNav'
 import ArticleList from '@/components/common/ArticleList'
 import Editor from '@/components/common/Editor'
+import request from '@/utils/request'
 export default {
     name:'List',
     data(){
@@ -41,9 +43,21 @@ export default {
         Editor
     },
     methods:{
-        // 发表文章的方法
-        postArticle(){
-
+        // 发表新文章的方法
+        addArticle(){
+            request({
+                method:'post',
+                url:"/articles/add",
+                data:{}
+            }).then(res=>{
+                // console.log(res)
+                // 1.首先获取到插入文章的id值
+                const addId = res.insertId
+                // 调用子组件中的updateArticle方法来更新文章列表
+                this.$refs.articleList.updateList(addId)
+            }).catch(err=>{
+                console.log(err)
+            })
         }
     }
 }
