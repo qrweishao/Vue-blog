@@ -49,8 +49,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-    @import '../assets/style/variable';
+<style type="text/scss" lang="scss" scoped>
+@import '../assets/style/variable';
 main {
     @include flex($justify: space-between);
     height: calc(100% - 48px);
