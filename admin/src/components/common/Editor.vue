@@ -7,9 +7,9 @@
                     <use xlink:href="#icon-biaoqian"></use>
                 </svg>
                 <ul class="tags">
-                    <li class="tag" v-for="(tag,index) in tags" :key="index">
+                    <li class="tag" v-for="(tag,index) in getTags" :key="index">
                         {{tag}}
-                        <sup></sup>
+                        <sup>x</sup>
                     </li>
                 </ul>
                 <input type="text" class="tag-input" id="tag-input">
@@ -31,31 +31,34 @@
 // 引入编辑器
 import 'simplemde/dist/simplemde.min.css'
 import SimpleMDE from 'simplemde'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
     name:'Editor',
     data() {
         return {
             simplemde:'',//编辑器
-            
         }
     },
     computed:{
-        ...mapState(['id','title','tags','content','isPublished']),
-        // ...mapMutations(['SET_CURRENT_ARTICLE'])
-        // getTags(){
-        //     return this.$store.getters.getTags
-        // }
+        ...mapState(['id','title','content','isPublished']),
+        ...mapGetters(['getTags']),
+        // ...mapSetters(['getTitle'])
     },
     mounted() {
-        // this.tags = this.$store.getters.getTags
         this.simplemde = new SimpleMDE({
             placeholder:'talk to me,what are you say..',
-            spellChecker:false
+            spellChecker:false,
+            toolbarTips:false
         });
         // 将vuex里面的正在编辑的文章的相关信息输出到编辑器里面去
-
+            this.simplemde.value(this.content)
     },
+    // 监控ID值的变化 如果一旦发生变化 就直接将内容变化
+    watch:{
+        id(newVal,oldVal){
+            this.simplemde.value(this.content)
+        }
+    }
 }
 </script>
 
@@ -105,7 +108,7 @@ export default {
                 size: 1.6rem;
             }
             color: $special;
-            text-decoration: underline;
+            // text-decoration: underline;
             cursor: pointer;
         }
     }

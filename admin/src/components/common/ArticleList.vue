@@ -27,6 +27,7 @@ export default {
         ...mapState(['id','title', 'tags', 'content', 'isPublished', 'toggleDelete']),
     },
     // 当该组件创建的时候自动执行里面的请求
+    // 获取文章列表
     created() {
          request({
             url:'/articles',
