@@ -2,11 +2,11 @@
     <div class="login-container">
         <header class="login-head">
             <span>伟少-博客系统</span>
-            <img class="logo" src="../assets/image/logo.png" >
+            <img class="logo" src="../assets/image/logo.gif" >
         </header>
         <section class="form">
             <span class="slogan">
-                登登登登。。。录
+                登~登~登~ 登录
                 <span>/ Login</span>
             </span>
             <input name="user" v-validate="'required|min:5|max:16|alpha_dash'" type="text" id="user" placeholder="请填写用户名" v-model="LoginForm.user">

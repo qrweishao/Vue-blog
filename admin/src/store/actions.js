@@ -1,11 +1,23 @@
 // 封装的请求request
-// import request from '@/utils/request'
+import request from '@/utils/request'
+// actions里面的代码和mutations里面的代码主要区别在于 actions里面乐意写异步代码 而mutations只能写同步代码 所以 我们会把业务代码放到actions里面
 const actions = {
-    // 登录的方法
-    // 登录方法传递两个参数 username password
-    // commit只是为了触发mutations方法
-    LOGIN({commit},username,password){
-        // 这里写登录的方法
+    async saveArticle({commit,state},{id,title,tags,content,isPublished}){
+        request({
+            method:'post',
+            url:`/articles/update/${id}`,
+            data:{
+                title,
+                tags,
+                content,
+                isPublished
+            }
+        }).then(res=>{
+            console.log(res)
+        }).catch(err=>{
+            console.log(err)
+        })
+        commit('SET_CURRENT_ARTICLE',{id,title,tags,content,isPublished})
     }
 }
 export default actions

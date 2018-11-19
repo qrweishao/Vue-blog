@@ -1,6 +1,6 @@
 <template>
     <div class="editor">
-        <input type="text" class="title" id="title" v-model="title">
+        <input type="text" class="title" id="title" v-model="title" @input="autosave">
         <div class="operate-bar">
             <section class="tag-container">
                  <svg class="icon" aria-hidden="true">
@@ -9,11 +9,11 @@
                 <ul class="tags">
                     <li class="tag" v-for="(tag,index) in getTags" :key="index">
                         {{tag}}
-                        <sup>x</sup>
+                        <sup @click="deleteTag(index)"> x </sup>
                     </li>
                 </ul>
-                <input type="text" class="tag-input" id="tag-input">
-                <span class="tag-add">+</span>
+                <input type="text" class="tag-input" id="tag-input"  @keydown.enter="addTag">
+                <span class="tag-add" @click="addTag">+</span>
             </section>
             <section class="btn-container">
                 <button id="delete" class="delete">删除文章</button>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+// 引入debounce方法
+import debounce from 'lodash.debounce'
 // 引入编辑器
 import 'simplemde/dist/simplemde.min.css'
 import SimpleMDE from 'simplemde'
@@ -40,9 +42,17 @@ export default {
         }
     },
     computed:{
-        ...mapState(['id','title','content','isPublished']),
+        ...mapState(['id','content','isPublished']),
         ...mapGetters(['getTags']),
-        // ...mapSetters(['getTitle'])
+        // 因为这个title是数据双向绑定 因此 它可能会被改变 如果我们直接从mapState中读取它的话 那么如果改变title的话 又因为它没有setter的话 就会导致无法直接改变state中的title
+        title:{
+            get(){
+                return this.$store.state.title
+            },
+            set(value){
+                this.$store.commit('SET_TITLE',value)
+            }
+        }   
     },
     mounted() {
         this.simplemde = new SimpleMDE({
@@ -52,13 +62,40 @@ export default {
         });
         // 将vuex里面的正在编辑的文章的相关信息输出到编辑器里面去
             this.simplemde.value(this.content)
+            // 绑定编辑器的按键事件以及复制 粘贴的事件发生
+            this.simplemde.codemirror.on('keyHandle',()=>this.autosave())
+            this.simplemde.codemirror.on('inputRead',()=>this.autosave())
     },
     // 监控ID值的变化 如果一旦发生变化 就直接将内容变化
     watch:{
         id(newVal,oldVal){
             this.simplemde.value(this.content)
         }
+    },
+    methods:{
+        // debounce去抖动函数(1000毫秒)避免发送请求过多
+        autosave:debounce(function(){
+            if (this.id) {
+                this.$store.dispatch('saveArticle',{
+                    id:this.id,
+                    title:this.title,
+                    tags:this.getTags.join(','),
+                    content:this.simplemde.value(),
+                    isPublished:this.isPublished
+                })
+            }
+        },1000),
+         // 删除标签
+    deleteTag(index){
+        this.getTags.splice(index,1)
+        this.autosave()
+    },
+    // 添加标签
+    addTag(){
+
     }
+    },
+   
 }
 </script>
 

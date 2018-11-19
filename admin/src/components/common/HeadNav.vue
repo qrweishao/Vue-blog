@@ -1,7 +1,7 @@
 <template>
     <nav class="head-nav">
         <div class="logo-container">
-            <img src="@/assets/image/logo.png" alt="" class="logo">
+            <img src="@/assets/image/logo.gif" alt="" class="logo">
         </div>
         <div class="content-container">
             <section>
