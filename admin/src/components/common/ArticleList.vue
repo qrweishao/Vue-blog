@@ -93,6 +93,24 @@ export default {
                 this.articleList[this.activeIndex].isPublished = val
             }
         },
+        toggleDelete(val){
+            // 如果这个值有变化 从false变为true 说明当前文章是需要删除的
+            this.articleList.splice(this.activeIndex,1)
+            if (this.activeIndex === this.articleList.length) {
+                this.activeIndex --
+            }
+            if (this.articleList.length !== 0) {
+                this.SET_CURRENT_ARTICLE(this.articleList[this.activeIndex])
+            }else{
+                this.SET_CURRENT_ARTICLE({
+                    id:'',
+                    title:"",
+                    tags:'',
+                    content:'',
+                    isPublished:''
+                })
+            }
+        }
     } 
 }
 </script>

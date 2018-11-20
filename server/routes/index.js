@@ -33,4 +33,9 @@ router.post('/articles/update/:id',checkToken,ArticleController.updateArticle)
 
 // 获取阅读列表
 router.get('/books',checkToken,BooksController.getBooksList)
+
+// 删除一篇文章
+router.delete('/article/:id',checkToken,ArticleController.deleteArticle)
+// 发布文章
+router.put('/articles/publish/:id',checkToken,ArticleController.publishArticle)
 export default router

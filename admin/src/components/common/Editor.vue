@@ -16,8 +16,8 @@
                 <span v-else class="tag-add" @click="addTag">+</span>
             </section>
             <section class="btn-container">
-                <button id="delete" class="delete">删除文章</button>
-                <button id="submit" class="not-del">发布文章</button>
+                <button id="delete" class="delete" @click="deleteArticle">删除文章</button>
+                <button id="submit" class="not-del" @click="publishArticle">发布文章</button>
             </section>
         </div>
         <p class="tips">标签查询页面只能批量更改标签 修改的文章内容会自动保存</p>
@@ -34,6 +34,7 @@ import debounce from 'lodash.debounce'
 import 'simplemde/dist/simplemde.min.css'
 import SimpleMDE from 'simplemde'
 import { mapState, mapGetters } from 'vuex'
+import request from '@/utils/request'
 export default {
     name:'Editor',
     data() {
@@ -43,7 +44,7 @@ export default {
         }
     },
     computed:{
-        ...mapState(['id','content','isPublished']),
+        ...mapState(['id','content','isPublished','toggleDelete']),
         ...mapGetters(['getTags']),
         // 因为这个title是数据双向绑定 因此 它可能会被改变 如果我们直接从mapState中读取它的话 那么如果改变title的话 又因为它没有setter的话 就会导致无法直接改变state中的title
         title:{
@@ -96,15 +97,45 @@ export default {
             // input显示的时候 会执行这个....
             if (this.showTags) {
                 const newTag = document.querySelector('#tag-input').value
-                this.getTags.push(newTag)
-                // 每次按下enter键的时候， 会自动
-                this.autosave()
+                // 标签查重
+                if (newTag && this.getTags.indexOf(newTag) === -1) {
+                    this.getTags.push(newTag)
+                    // 每次按下enter键的时候， 会自动
+                    this.autosave()
+                }
+               
             }
             // 只是一个单纯的切换功能 第一次点击+的时候显示input表单 第二次在input表单中输入内容的时候按下enter键就隐藏表单
             this.showTags = !this.showTags
+        },
+        // 删除文章
+        deleteArticle(){
+            request({
+                url:`/article/${this.id}`,
+                method:'delete',
+                data:{}
+            }).then(res=>{
+                // 删除以后 要更新视图 让视图中的文章也跟着更新
+                this.$store.commit('SET_DELETE_ARTICLE')
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+        // 发布文章
+        publishArticle(){
+            if (!this.isPublished) {
+                request({
+                    url:`/articles/publish/${this.id}`,
+                    method:'put',
+                    data:{}
+                }).then(res=>{
+                    this.$store.commit('SET_PUBLISH_STATE')
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
         }
-    },
-   
+    }
 }
 </script>
 
