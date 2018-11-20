@@ -5,6 +5,8 @@ import checkToken from '../utils/checkToken'
 import ArticleController from '../Controller/ArticleController'
 // 引入登录注册的控制器
 import UserController from '../Controller/UserController'
+// 引入阅读的控制器
+import BooksController from '../Controller/BooksController'
 const router = new Router()
 router.get('/',async ctx=>{
     ctx.body = '欢迎使用vue-blog接口测试服务器'
@@ -28,4 +30,7 @@ router.post('/articles/add',checkToken,ArticleController.addArticle)
 router.get('/articles/:id',checkToken,ArticleController.getOneArticle)
 // 更新一篇新的文章
 router.post('/articles/update/:id',checkToken,ArticleController.updateArticle)
+
+// 获取阅读列表
+router.get('/books',checkToken,BooksController.getBooksList)
 export default router

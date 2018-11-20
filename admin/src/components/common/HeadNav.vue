@@ -64,7 +64,11 @@ export default {
         border-bottom: 2px solid $base;
         .log-out {
             @include flex;
-            color: $word;
+            color: #ff6700;
+        }
+        .log-out:hover {
+            transition: all 0.5s ease;
+            transform: scale(1.05)
         }
     }
 
